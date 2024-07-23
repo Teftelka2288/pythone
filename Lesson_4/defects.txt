@@ -1,0 +1,49 @@
+Багрепорты
+
+Окружение:
+platform win32 -- Python 3.12.4, pytest-8.3.1, pluggy-1.5.0
+rootdir: C:\Users\Тимофей\pythone
+
+
+
+1. Ошибка в функции to_list в модуле StringUtils:
+   - Описание: При использовании функции to_list для преобразования строки в список с использованием разделителя None, возникает ошибка ValueError.
+   - Шаги для воспроизведения: Вызовите функцию to_list с параметрами "a,b,c,d".
+   - Ожидаемый результат: Функция to_list должна вернуть список ['a', 'b', 'c', 'd'], но вызывает ошибку ValueError.
+
+
+Отчёт об ошибке PyTest:
+_______________________________________________________ FAILED test_string_utils.py::test_to_list[0] ________________________________________________________
+input_string = 'a,b,c,d', input_delimeter = None, expected_output = ['a', 'b', 'c', 'd']
+
+test_string_utils.py:55: in test_to_lis
+    assert util.to_list(input_string, input_delimeter) == expected_output
+E   AssertionError: assert ['a,b,c,d'] == ['a', 'b', 'c', 'd']
+E     At index 0 diff: 'a,b,c,d' != 'a'
+E     Right contains 3 more items, first extra item: 'b'
+E     Full diff:
+E     - ['a', 'b', 'c', 'd']
+E     + ['a,b,c,d']
+
+test_string_utils.py:55: AssertionError
+============================================================================================================================================================
+
+
+2. Ошибка в функции list_to_string в модуле StringUtils:
+   - Описание: При использовании функции list_to_string со списком целых чисел, результат не соответствует ожидаемому.
+   - Шаги для воспроизведения: Вызовите функцию list_to_string со списком целых чисел [1, 2, 3, 4]
+   - Ожидаемый результат: Функция list_to_string должна вернуть строку с разделителем по умолчанию, но возвращает '1234'.
+
+
+Отчёт об ошибке PyTest:
+______________________________________________________ FAILED test_string_utils.py::test_list_to_string[0] _________________________________________________
+
+input_lst = [1, 2, 3, 4], input_joiner = '', expected_output = '1, 2, 3, 4'
+
+test_string_utils.py:168: in test_list_to_string
+    assert util.list_to_string(input_lst, input_joiner) == expected_output
+E   AssertionError: assert '1234' == '1, 2, 3, 4'
+E     - 1, 2, 3, 4
+E     + 1234
+
+test_string_utils.py:168: AssertionError
