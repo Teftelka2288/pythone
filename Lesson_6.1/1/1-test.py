@@ -1,58 +1,21 @@
-import pytest
-from PageObject import DatatypesPage
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service as ChromeService
-from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
+from time import sleep
 
-@pytest.fixture
-def browser():
-    driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
-    driver.maximize_window()
-    driver.implicitly_wait(10)
-    yield driver
+driver = webdriver.Chrome()
+wait = WebDriverWait(driver, 40, 0.1)
 
-    
+try:
+    driver.get("http://uitestingplayground.com/ajax")
+    blue_button = driver.find_element(By.CSS_SELECTOR, "#ajaxButton").click()
+    text_frome_content = wait.until(EC.visibility_of_all_elements_located(
+        (By.CSS_SELECTOR, ".bg-success")))
+    sleep(2)
+    print(text_frome_content)
+
+except Exception as ex:
+    print(ex)
+finally:
     driver.quit()
-    
-@pytest.mark.parametrize("data", [
-    {
-        "First_name": "Иван",
-        "Last_name": "Петров",
-        "Address": "Ленина, 55-3",
-        "Email": "test@skypro.com",
-        "Phone_number": "+7985899998787",
-        "Zip_code": "",
-        "City": "Москва",
-        "Country": "Россия",
-        "Job_position": "QA",
-        "Company": "SkyPro"
-    }
-])
-
-def test_1(browser, data):
-
-    page = DatatypesPage(browser, "https://bonigarcia.dev/selenium-webdriver-java/data-types.html")
-
-
-    for field_name, field_value in data.items():
-        method = getattr(page, f"type_{field_name}")
-        method(field_value)
-    
-
-    page.clk_Submit()
-    
- 
-    colors = {}
-
-    for field_name in data.keys():
-        method = getattr(page, f"bkgr_{field_name}")
-        colors[field_name] = method()
-
-
-    expected_color_red = "rgba(248, 215, 218, 1)"
-
-    expected_color_green = "rgba(209, 231, 221, 1)"
-
-    for field_name, color in colors.items():
-        expected_color = expected_color_red if field_name == "Zip_code" else expected_color_green
-        assert color == expected_color, f"Некорректный цвет для поля {field_name}"
